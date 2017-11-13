@@ -12,6 +12,8 @@ proxy.on('error', function(e) {
 
 // Create a new webserver
 http.createServer((req,res) => {
+
+  setResponseHeaders(req, res);
   // can we read the incoming url?
   let host = req.headers.host;
   let hostParts = host.split('.');
@@ -36,3 +38,12 @@ http.createServer((req,res) => {
 
 }).listen(80);
 
+function setResponseHeaders(req, res) {
+  // writeHead is built in.
+  res.oldWriteHead = res.writeHead;
+
+  res.writeHead = function(statusCode, headers) {
+    res.setheader('x-powered-by', 'Olas server');
+    res.oldWriteHead(statusCode, headers);
+  }
+}
