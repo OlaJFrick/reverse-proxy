@@ -9,7 +9,7 @@ const proxy = httpProxy.createProxyServer();
 http.createServer((req,res) => {
   // can we read the incoming url?
   let host = req.headers.host;
-  let hostParts = host.split(.);
+  let hostParts = host.split('.');
   let topDomain = hostParts.pop();
   let domain = hostParts.pop();
   let subDomain = hostParts.join('.');
