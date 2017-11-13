@@ -8,6 +8,6 @@ const proxy = httpProxy.createProxyServer();
 // Create a new webserver
 http.createServer((req,res) => {
   // can we read the incoming url?
-  res.write(req.url);
+  res.end(req.url);
 }).listen(80);
 
