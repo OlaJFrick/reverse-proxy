@@ -18,7 +18,7 @@ http.createServer((req,res) => {
   let port;
   if(subDomain == '' || subDomain == 'www') {
     port = 4001;
-  } else if (subDomain == 'cooling') {
+  } else if (subDomain == 'portfolio') {
     port = 3000;
   } else {
     res.statusCode = 500;
