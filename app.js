@@ -21,7 +21,9 @@ proxy.on('error', function(e) {
 
 // Create a new webserver
 https.createServer({
-  SNICallback: (domain, callback) => callback(null, certs[domain].secureContext),
+  SNICallback: (domain, callback) => callback(
+    certs[domain] ? null : new Error('No such cert'),
+    certs[domain] ? certs[domain].secureContext),
   key: certs['olafrick.se'].key,
   cert: certs['olafrick.se'].cert
 }, (req, res) => {
