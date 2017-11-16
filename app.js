@@ -121,15 +121,16 @@ function readCerts(pathToCerts){
 
 }
 
-function renewCerts() {
-  exec('certbot renew', (error, stdOut,stdError)=> {
-    console.log('renewing cerst', stdOut);
-    certs = readCerts("/etc/letsencrypt/live");
+function renewCerts(){
+
+  exec('certbot renew',(error,stdOut,stdError)=>{
+    console.log('renewing certs',stdOut);
+    certs = readCerts('/etc/letsencrypt/live');
   });
+
 }
 
-// renew certs if needed on start.
-
+// Renew certs if needed on start
 renewCerts();
-// and then Once everyday;
+// and then once every day
 setInterval(renewCerts, 1000 * 60 * 60 * 24);
