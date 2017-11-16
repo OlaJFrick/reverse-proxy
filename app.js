@@ -67,7 +67,7 @@ https.createServer({
   if(subDomain == '' || subDomain == 'www'){
     port = 4001; // app: testapp
   }
-  else if(subDomain == 'cooling'){
+  else if(subDomain == 'portfolio'){
     port = 3000; // app: example
   }
   else {
