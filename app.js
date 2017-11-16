@@ -1,12 +1,10 @@
 // Requires
 const http = require('http');
+const https = require('https');
 const httpProxy = require('http-proxy');
 const tls = require('tls');
 const path = require('path');
 const fs = require('fs');
-
-
-// constants
 
 // Read all certs from certbot into an object
 let certs = readCerts('/etc/letsencrypt/live');
@@ -22,7 +20,11 @@ proxy.on('error', function(e) {
 
 
 // Create a new webserver
-http.createServer((req, res) => {
+https.createServer({
+  SNICallback: (domain, callback) => callback(null, certs[domain].secureContext),
+  key: certs['olafrick.se'].key,
+  cert: certs['olafrick.se'].cert
+}, (req, res) => {
 
   setResponseHeaders(req, res);
   // can we read the incoming url?
@@ -37,7 +39,7 @@ http.createServer((req, res) => {
 
   if (urlParts[1] == '.well-known') {
     port = 5000; // certbot-helper
-  }  else if (subDomain == '' || subDomain == 'www') {
+  } else if (subDomain == '' || subDomain == 'www') {
     port = 4001;
   } else if (subDomain == 'portfolio') {
     port = 3000;
@@ -64,16 +66,16 @@ function setResponseHeaders(req, res) {
   }
 }
 
-function readCerts(pathToCerts){
+function readCerts(pathToCerts) {
   let certs = {},
-      domains = fs.readdirSync(pathToCerts);
+    domains = fs.readdirSync(pathToCerts);
 
   // Read all ssl certs into memory from file
-  for(let domain of domains){
+  for (let domain of domains) {
     let domainName = domain.split('-0')[0];
     certs[domainName] = {
-      key:  fs.readFileSync(path.join(pathToCerts,domain,'privkey.pem')),
-      cert: fs.readFileSync(path.join(pathToCerts,domain,'fullchain.pem'))
+      key: fs.readFileSync(path.join(pathToCerts, domain, 'privkey.pem')),
+      cert: fs.readFileSync(path.join(pathToCerts, domain, 'fullchain.pem'))
     };
     certs[domainName].secureContext = tls.createSecureContext(certs[domainName]);
   }
