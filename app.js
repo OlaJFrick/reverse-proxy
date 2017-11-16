@@ -15,28 +15,25 @@ const proxy = httpProxy.createProxyServer();
 
 // Handle proxy errors - thus not breaking the whole
 // reverse-proxy app if an app doesn't answer
-proxy.on('error', function(e) {
+proxy.on('error',function(e){
   console.log('Proxy error', Date.now(), e);
 })
 
 // Create a new unencrypted webserver
 // with the purpose to answer certbot challenges
 // and redirect all other traffic to https
-http.createServer((req, res) => {
+http.createServer((req,res)=>{
 
   let urlParts = req.url.split('/');
 
-  if (urlParts[1] == '.well-known') {
+  if(urlParts[1] == '.well-known'){
     // using certbot-helper on port 5000
-    proxy.web(req, res, {
-      target: 'http://127.0.0.1:5000'
-    });
-  } else {
+    proxy.web(req,res,{target:'http://127.0.0.1:5000'});
+  }
+  else {
     // redirect to https
     let url = 'https://' + req.headers.host + req.url;
-    res.writeHead(301, {
-      'Location': url
-    });
+    res.writeHead(301, {'Location': url});
     res.end();
   }
 
@@ -53,10 +50,10 @@ https.createServer({
   // But we still have the server with a "default" cert
   key: certs['olafrick.se'].key,
   cert: certs['olafrick.se'].cert
-}, (req, res) => {
+},(req,res) => {
 
   // Set/replace response headers
-  setResponseHeaders(req, res);
+  setResponseHeaders(req,res);
 
   // Can we read the incoming url?
   let host = req.headers.host;
@@ -68,33 +65,33 @@ https.createServer({
 
   let port;
 
-  if (subDomain == 'www') {
+  // Don't run our main site on both www and non-www.
+  // Choose non-www domain
+  if(subDomain == 'www'){
     // redirect to domain without www
     let url = 'https://' + domain + '.' + topDomain + req.url;
-    res.writeHead(301, {
-      'Location': url
-    });
+    res.writeHead(301, {'Location': url});
     res.end();
-  } else if (subDomain == '') {
+  }
+  else if(subDomain == ''){
     port = 4001; // app: testapp
-  } else if (subDomain == 'cooling') {
+  }
+  else if(subDomain == 'portfolio'){
     port = 3000; // app: example
-  } else {
+  }
+  else {
     res.statusCode = 404;
     res.end('No such url!');
   }
 
-
-  if (port) {
-    proxy.web(req, res, {
-      target: 'http://127.0.0.1:' + port
-    });
+  if(port){
+    proxy.web(req,res,{target:'http://127.0.0.1:' + port});
   }
 
 }).listen(443);
 
 
-function setResponseHeaders(req, res) {
+function setResponseHeaders(req,res){
 
   // there is a built in node function called res.writeHead
   // that writes http response headers
@@ -102,28 +99,28 @@ function setResponseHeaders(req, res) {
   res.oldWriteHead = res.writeHead;
 
   // and then replace it with our function
-  res.writeHead = function(statusCode, headers) {
+  res.writeHead = function(statusCode, headers){
 
     // set/replace our own headers
-    res.setHeader('x-powered-by', 'Thomas supercoola server');
+    res.setHeader('x-powered-by','Thomas supercoola server');
 
     // call the original write head function as well
-    res.oldWriteHead(statusCode, headers);
+    res.oldWriteHead(statusCode,headers);
   }
 
 }
 
-function readCerts(pathToCerts) {
+function readCerts(pathToCerts){
 
   let certs = {},
-    domains = fs.readdirSync(pathToCerts);
+      domains = fs.readdirSync(pathToCerts);
 
   // Read all ssl certs into memory from file
-  for (let domain of domains) {
+  for(let domain of domains){
     let domainName = domain.split('-0')[0];
     certs[domainName] = {
-      key: fs.readFileSync(path.join(pathToCerts, domain, 'privkey.pem')),
-      cert: fs.readFileSync(path.join(pathToCerts, domain, 'fullchain.pem'))
+      key:  fs.readFileSync(path.join(pathToCerts,domain,'privkey.pem')),
+      cert: fs.readFileSync(path.join(pathToCerts,domain,'fullchain.pem'))
     };
     certs[domainName].secureContext = tls.createSecureContext(certs[domainName]);
   }
@@ -132,10 +129,10 @@ function readCerts(pathToCerts) {
 
 }
 
-function renewCerts() {
+function renewCerts(){
 
-  exec('certbot renew', (error, stdOut, stdError) => {
-    console.log('renewing certs', stdOut);
+  exec('certbot renew',(error,stdOut,stdError)=>{
+    console.log('renewing certs',stdOut);
     certs = readCerts('/etc/letsencrypt/live');
   });
 
