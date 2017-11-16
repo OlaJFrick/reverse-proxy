@@ -11,7 +11,7 @@ proxy.on('error', function(e) {
 });
 
 // Create a new webserver
-http.createServer((req,res) => {
+http.createServer((req, res) => {
 
   setResponseHeaders(req, res);
   // can we read the incoming url?
@@ -23,7 +23,10 @@ http.createServer((req,res) => {
   let urlParts = req.url.split('/');
 
   let port;
-  if(subDomain == '' || subDomain == 'www') {
+
+  if (urlParts[0] == '.well-known') {
+    port = 5000; // certbot-helper
+  }  else if (subDomain == '' || subDomain == 'www') {
     port = 4001;
   } else if (subDomain == 'portfolio') {
     port = 3000;
@@ -32,9 +35,11 @@ http.createServer((req,res) => {
     res.end('Can not fin your app!');
   }
 
-    if(port) {
-      proxy.web(req, res, {target: 'http://127.0.0.1:' + port});
-    }
+  if (port) {
+    proxy.web(req, res, {
+      target: 'http://127.0.0.1:' + port
+    });
+  }
 
 }).listen(80);
 
