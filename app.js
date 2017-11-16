@@ -23,7 +23,7 @@ proxy.on('error', function(e) {
 https.createServer({
   SNICallback: (domain, callback) => callback(
     certs[domain] ? null : new Error('No such cert'),
-    certs[domain] ? certs[domain].secureContext),
+    certs[domain] ? certs[domain].secureContext : null
   key: certs['olafrick.se'].key,
   cert: certs['olafrick.se'].cert
 }, (req, res) => {
