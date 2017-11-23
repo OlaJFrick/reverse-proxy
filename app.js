@@ -90,8 +90,7 @@ https.createServer({
 
 }).listen(443);
 
-
-function setResponseHeaders(req,res){
+function setResponseHeaders(req,res) {
 
   // there is a built in node function called res.writeHead
   // that writes http response headers
@@ -99,18 +98,17 @@ function setResponseHeaders(req,res){
   res.oldWriteHead = res.writeHead;
 
   // and then replace it with our function
-  res.writeHead = function(statusCode, headers){
+  res.writeHead = function(statusCode, headers) {
 
     // set/replace our own headers
-    res.setHeader('x-powered-by','Thomas supercoola server');
+    res.setHeader('x-powered-by','This is powered by Ola');
 
     // call the original write head function as well
     res.oldWriteHead(statusCode,headers);
   }
-
 }
 
-function readCerts(pathToCerts){
+function readCerts(pathToCerts) {
 
   let certs = {},
       domains = fs.readdirSync(pathToCerts);
@@ -129,7 +127,7 @@ function readCerts(pathToCerts){
 
 }
 
-function renewCerts(){
+function renewCerts() {
 
   exec('certbot renew',(error,stdOut,stdError)=>{
     console.log('renewing certs',stdOut);
