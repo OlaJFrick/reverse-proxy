@@ -7,6 +7,9 @@ const fs = require('fs');
 const path = require('path');
 const exec = require('child_process').exec;
 
+// Read our routes
+const routes = require('./routing.json');
+
 // Read all certs from certbot into an object
 let certs = readCerts("/etc/letsencrypt/live");
 
@@ -55,42 +58,46 @@ https.createServer({
   // Set/replace response headers
   setResponseHeaders(req,res);
 
-  // Can we read the incoming url?
-  let host = req.headers.host;
-  let hostParts = host.split('.');
-  let topDomain = hostParts.pop();
-  let domain = hostParts.pop();
-  let subDomain = hostParts.join('.');
-  let urlParts = req.url.split('/');
+  // Routing
+  let host = req.headers.host,
+      url = req.url,
+      portToUse;
 
-  let port;
+  url += (url.substr(-1) != '/' ? '/' : '');
 
-  // Don't run our main site on both www and non-www.
-  // Choose non-www domain
-  if(subDomain == 'www'){
-    // redirect to domain without www
-    let url = 'https://' + domain + '.' + topDomain + req.url;
+  for(let route in routes){
+    let port = routes[route];
+    if(route.includes('/')){
+      route += (route.substr(-1) != '/' ? '/' : '')
+    }
+    if(route == host){
+      portToUse = port;
+    }
+    else if (url != '/' && (host + url).indexOf(route) == 0){
+      portToUse = port;
+    }
+  }
+
+  // Redirects
+  if(portToUse && portToUse.redirect){
+    let url = 'https://' + portToUse.redirect;
     res.writeHead(301, {'Location': url});
     res.end();
   }
-  else if(subDomain == ''){
-    port = 4001; // app: testapp
-  }
-  else if(subDomain == 'portfolio'){
-    port = 3000; // app: example
+
+  // Serve the correct app for a domain
+  else if (portToUse){
+    proxy.web(req,res,{target:'http://127.0.0.1:' + portToUse});
   }
   else {
     res.statusCode = 404;
     res.end('No such url!');
   }
 
-  if(port){
-    proxy.web(req,res,{target:'http://127.0.0.1:' + port});
-  }
-
 }).listen(443);
 
-function setResponseHeaders(req,res) {
+
+function setResponseHeaders(req,res){
 
   // there is a built in node function called res.writeHead
   // that writes http response headers
@@ -98,17 +105,25 @@ function setResponseHeaders(req,res) {
   res.oldWriteHead = res.writeHead;
 
   // and then replace it with our function
-  res.writeHead = function(statusCode, headers) {
+  res.writeHead = function(statusCode, headers){
 
     // set/replace our own headers
-    res.setHeader('x-powered-by','This is powered by Ola');
+    res.setHeader('x-powered-by','Powered by Ola');
+
+    // security related
+    res.setHeader('strict-transport-security','max-age=31536000; includeSubDomains; preload');
+    res.setHeader('x-frame-options','SAMEORIGIN');
+    res.setHeader('x-xss-protection', '1');
+    res.setHeader('x-content-type-options','nosniff');
+    res.setHeader('content-security-policy',"default-src * 'unsafe-inline' 'unsafe-eval'");
 
     // call the original write head function as well
     res.oldWriteHead(statusCode,headers);
   }
+
 }
 
-function readCerts(pathToCerts) {
+function readCerts(pathToCerts){
 
   let certs = {},
       domains = fs.readdirSync(pathToCerts);
@@ -127,7 +142,7 @@ function readCerts(pathToCerts) {
 
 }
 
-function renewCerts() {
+function renewCerts(){
 
   exec('certbot renew',(error,stdOut,stdError)=>{
     console.log('renewing certs',stdOut);
