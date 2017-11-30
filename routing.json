@@ -9,5 +9,6 @@
   "mdb.olafrick.se/vid": 3000,
   "mdb.olafrick.se/rest/countries": 3000,
   "mdb.olafrick.se/rest/genre": 3000,
-  "mdb.olafrick.se/rest/search": 3000
+  "mdb.olafrick.se/rest/search": 3000,
+  "mdb.olafrick.se/rest/search/:searchWord": 3000
 }
