@@ -6,5 +6,8 @@
   "projects.olafrick.se": 7000,
   "mdb.olafrick.se": 6000,
   "mdb.olafrick.se/rest": 3000,
-  "mdb.olafrick.se/vid": 3000
+  "mdb.olafrick.se/vid": 3000,
+  "mdb.olafrick.se/rest/countries": 3000,
+  "mdb.olafrick.se/rest/genre": 3000,
+  "mdb.olafrick.se/rest/search": 3000
 }
