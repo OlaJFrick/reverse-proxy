@@ -6,6 +6,7 @@
   "projects.olafrick.se": 7000,
   "mdb.olafrick.se": 6000,
   "mdb.olafrick.se/rest": 3000,
-  "mdb.olafrick.se/vid": 3000, 
-  "refreshed.olafrick.se": 3200
+  "mdb.olafrick.se/vid": 3000,
+  "refreshed.olafrick.se": 3200,
+  "refreshedv2.olafrick.se": 3100
 }
