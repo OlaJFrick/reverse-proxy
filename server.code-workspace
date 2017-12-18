@@ -1,29 +1,32 @@
 {
-	"folders": [
-		{
-			"path": "."
-		},
-		{
-			"path": "/Users/olafrick_/Desktop/projects-repo"
-		},
-		{
-			"path": "/Users/olafrick_/Desktop/home-app"
-		},
-		{
-			"path": "/Users/olafrick_/Desktop/mdb-server"
-		},
-		{
-			"path": "/Users/olafrick_/Desktop/auto-git-node.js"
-		},
-		{
-			"path": "/Users/olafrick_/Desktop/mdb-frontend"
-		},
-		{
-			"path": "/Users/olafrick_/Desktop/refreshed.se"
-		},
-		{
-			"path": "/Users/olafrick_/Desktop/certbot-helper"
-		}
-	],
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "/Users/olafrick_/Desktop/projects-repo"
+    },
+    {
+      "path": "/Users/olafrick_/Desktop/home-app"
+    },
+    {
+      "path": "/Users/olafrick_/Desktop/mdb-server"
+    },
+    {
+      "path": "/Users/olafrick_/Desktop/auto-git-node.js"
+    },
+    {
+      "path": "/Users/olafrick_/Desktop/mdb-frontend"
+    },
+    {
+      "path": "/Users/olafrick_/Desktop/refreshed.se"
+    },
+    {
+      "path": "/Users/olafrick_/Desktop/certbot-helper"
+    },
+    {
+      "path": "/Users/olafrick_/Desktop/mdb-full-project"
+    }
+  ],
     "settings": {}
 }
