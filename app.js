@@ -75,7 +75,7 @@ https
 
         if (route === host) {
           portToUse = port;
-        } else if (url !== "/" && route.indexOf(host + url) === 0) {
+        } else if (url != '/' && (host + url).indexOf(route) == 0) {
           portToUse = port;
         }
       }
