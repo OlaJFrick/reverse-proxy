@@ -3,12 +3,9 @@
   "www.olafrick.se": {
     "redirect": "olafrick.se"
   },
-  "projects.olafrick.se": 7000,
   "mdb.olafrick.se": 6000,
   "mdb.olafrick.se/rest": 3000,
   "mdb.olafrick.se/vid": 3000,
-  "refreshed.olafrick.se": 3200,
-  "refreshed2.olafrick.se": 3100,
-  "quiz.olafrick.se": 3005,
-  "skaneus.olafrick.se": 4080
+  "skaneus.olafrick.se": 4080,
+  "quiz-server.olafrick.se": 3005
 }
